@@ -25,7 +25,7 @@ public class IridiumSkyblockForgeTweaks extends JavaPlugin {
     public void onEnable() {
         // 注册事件监听器
         //getServer().getPluginManager().registerEvents(new ForgeEventListener(), this);
-        Bukkit.getPluginManager().registerEvents(this, this);
+        getServer().getPluginManager().registerEvents(this, this);
         LOGGER.info("日志测试！！！！！！！！！！！！！！！！！！");
     }
 
