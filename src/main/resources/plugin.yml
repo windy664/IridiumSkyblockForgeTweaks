@@ -1,0 +1,4 @@
+name: IridiumSkyblockForgeTweaks
+version: 1.0
+main: org.windy.iridiumskyblockforgetweaks.IridiumSkyblockForgeTweaks
+api-version: 1.20
