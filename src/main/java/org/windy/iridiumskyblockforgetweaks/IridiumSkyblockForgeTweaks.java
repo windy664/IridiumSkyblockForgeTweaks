@@ -3,93 +3,97 @@ package org.windy.iridiumskyblockforgetweaks;
 import com.simibubi.create.AllTags.AllItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.Event;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-import com.mohistmc.api.event.BukkitHookForgeEvent;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-public final class IridiumSkyblockForgeTweaks extends JavaPlugin implements Listener {
+/**
+ * The value here should match an entry in the META-INF/mods.toml file
+ */
+@Mod(IridiumSkyblockForgeTweaks.MODID)
+public class IridiumSkyblockForgeTweaks {
+    IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+    // Define mod id in a common place for global access
+    public static final String MODID = "iridiumskyblockforgetweaks";
+    // Directly reference a log4j logger
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Override
-    public void onEnable() {
-        // 注册 Bukkit 和 Forge 事件监听器
-        Bukkit.getPluginManager().registerEvents(this, this);
-        // 注册 Forge 事件监听器
-        net.minecraftforge.eventbus.api.IEventBus modEventBus = net.minecraftforge.common.MinecraftForge.EVENT_BUS;
+    // Create a simple instance variable so we can access it in a static context
+    public IridiumSkyblockForgeTweaks() {
+        // Register the commonSetup method for modloading
+        IEventBus modEventBus = MinecraftForge.EVENT_BUS;
+        // This will run during Minecraft's initialization phase
         modEventBus.register(this);
-        LOGGER.info("插件已启用，日志测试！！！！！！！！！！！！！！！！！！");
+
+        // Register the deferred register for items, blockstates, and recipes
+        // You can use SubscribeEvent and let the Event Bus discover all methods to call
+        // on the mod side (i.e. common and client)
     }
 
-    @Override
-    public void onDisable() {
-        // 在插件禁用时执行的代码（如果有）
+    // You can use SubscribeEvent and let the Event Bus discover all methods to call
+    // on the mod side (i.e. common and client)
+    private void commonSetup(final FMLCommonSetupEvent event)
+    {
+
     }
 
-    // 处理 Bukkit 事件
-    @EventHandler
-    public void onPlayerInteractBukkit(PlayerInteractEvent event) {
-
-
-        org.bukkit.entity.Player player = event.getPlayer();
-        org.bukkit.inventory.ItemStack itemStack = event.getItem();
-
-        if (player == null || itemStack == null || itemStack.getType() == Material.AIR) return;
-
-        // 从配置文件获取 CREATE_WRENCH 材质名称
-        String wrenchMaterialName = "CREATE_WRENCH";
-        Material wrenchMaterial = Material.getMaterial(wrenchMaterialName);
-
-        if (wrenchMaterial == null || !itemStack.getType().toString().contains(wrenchMaterial.name())) {
-            return;
-        }
-
-        // 检查是否是 Create Mod 的扳手
-        if (AllItemTags.WRENCH.matches(ItemStack.fromBukkitCopy(itemStack))) {
-            LOGGER.info("监听到Bukkit扳手事件，准备取消");
-
-            // 执行扳手操作（这里只需要取消事件）
-            event.setCancelled(true);
-            LOGGER.info("Bukkit扳手事件已取消");
-        }
-    }
-
-    // Forge 事件监听示例
+    // You can use SubscribeEvent and let the Event Bus discover all methods to call
+    // on the mod side (i.e. common and client)
     @SubscribeEvent
-    public void onForgeWrenchEvent(net.minecraftforge.event.entity.player.PlayerInteractEvent event) {
-        LOGGER.info("Forge事件触发");
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        // Log event details
+        LOGGER.info("Forge Event Triggered: " + event.getAction());
 
-        // 处理该事件
-        Player player = event.getEntity();
-        ItemStack itemStack = event.getItemStack();
+        // 只处理右键点击事件
+        if (event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_AIR ||
+                event.getAction() == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
 
-        if (event.isCanceled()) return;
-        if (player == null) return;
+            Player player = event.getEntity();
+            ItemStack itemStack = event.getItemStack();
 
-        // 从配置文件获取 CREATE_WRENCH 材质名称
-        String wrenchMaterialName = "CREATE_WRENCH";
-        // 这里你需要使用 Forge 的 Material 获取方式
-        // 但是 Forge 中并没有直接的 `Material` 类，通常要通过 Forge 自己的物品系统来处理
+            // 检查玩家是否按住 Shift 键
+            if (player.isSneaking() && itemStack != null && !itemStack.isEmpty()) {
+                // 获取扳手的材料名称，这里我们假设扳手有一个定义好的名称
+                String wrenchMaterialName = "CREATE_WRENCH";
 
-        if (itemStack == null || !itemStack.toString().contains(wrenchMaterialName)) {
-            return;
+                // 检查物品是否包含扳手的名称
+                if (itemStack.toString().contains(wrenchMaterialName)) {
+                    // 输出日志
+                    LOGGER.info("监听到Forge扳手事件，准备取消");
+                    // 取消事件
+                    event.setCanceled(true);
+                    LOGGER.info("Forge扳手事件已取消");
+                }
+            }
         }
+    }
 
-        // 使用 Create API 检查是否为扳手
-        if (AllItemTags.WRENCH.matches(itemStack)) {
-            LOGGER.info("监听到Forge扳手事件，准备取消");
+    // You can use EventBus to discover events to fire
+    // Some common events are registered here for convenience
+    @SubscribeEvent
+    public void onClientSetup(final FMLClientSetupEvent event) {
+        // Some common setup code for the client
+        LOGGER.info("HELLO FROM CLIENT SETUP");
+    }
 
-            // 执行扳手操作（这里只需要取消事件）
-            event.setCanceled(true);
-            LOGGER.info("Forge扳手事件已取消");
-        }
+    // You can use EventBus to discover events to fire
+    // Some common events are registered here for convenience
+    @SubscribeEvent
+    public void onServerSetup(final FMLCommonSetupEvent event) {
+        // Some common setup code for the server
+        LOGGER.info("HELLO FROM SERVER SETUP");
     }
 }
