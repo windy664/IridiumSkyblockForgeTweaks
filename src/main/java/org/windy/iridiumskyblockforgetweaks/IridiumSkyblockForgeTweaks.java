@@ -37,42 +37,7 @@ public final class IridiumSkyblockForgeTweaks extends JavaPlugin implements List
         // 在插件禁用时执行的代码（如果有）
     }
 
-    @EventHandler
-    public void onBukkitWrenchEvent(PlayerInteractEvent event) {
-        if (event.getAction() != org.bukkit.event.player.Action.RIGHT_CLICK_BLOCK) return; // 只处理右键点击方块
 
-        LOGGER.info("Bukkit事件触发");
-        Player player = event.getPlayer();
-        ItemStack itemStack = event.getItem();
-
-        // 基本检查：防止事件被取消
-        if (event.isCancelled()) return;
-        if (player == null || !player.hasPermission("build")) return; // 确保玩家有权限建造
-        if (itemStack == null || itemStack.getType() == Material.AIR) return; // 检查物品是否为空
-
-        // 从配置文件获取 CREATE_WRENCH 材质名称
-        String wrenchMaterialName = "CREATE_WRENCH";
-        Material wrenchMaterial = Material.getMaterial(wrenchMaterialName);
-
-        if (wrenchMaterial == null || !itemStack.getType().name().contains(wrenchMaterial.name())) {
-            return; // 如果没有持有 CREATE_WRENCH，直接返回
-        }
-
-        // 检查该物品是否为扳手
-        if (AllItemTags.WRENCH.matches(itemStack.getItem())) {
-            LOGGER.info("监听到Forge扳手事件，准备取消");
-
-            // 获取方块状态和扳手操作
-            BlockState blockState = event.getClickedBlock().getState();
-            Block block = blockState.getBlock();
-
-            if (!(block instanceof IWrenchable)) return;
-
-            // 执行扳手操作（这里只需要取消事件）
-            event.setCancelled(true); // 取消事件，防止继续执行
-            LOGGER.info("Forge扳手事件已取消");
-        }
-    }
 
     // Forge 事件监听示例
     @SubscribeEvent
