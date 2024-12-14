@@ -18,7 +18,7 @@ import org.bukkit.event.Listener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class IridiumSkyblockForgeTweaks extends JavaPlugin {
+public class IridiumSkyblockForgeTweaks eextends JavaPlugin implements Listener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
