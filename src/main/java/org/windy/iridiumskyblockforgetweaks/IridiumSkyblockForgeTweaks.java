@@ -2,6 +2,8 @@ package org.windy.iridiumskyblockforgetweaks;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import com.simibubi.create.AllTags.AllItemTags;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
@@ -18,14 +20,14 @@ import org.bukkit.event.Listener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class IridiumSkyblockForgeTweaks eextends JavaPlugin implements Listener {
+    public final class IridiumSkyblockForgeTweaks extends JavaPlugin implements Listener {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
     public void onEnable() {
         // 注册事件监听器
         //getServer().getPluginManager().registerEvents(new ForgeEventListener(), this);
-        getServer().getPluginManager().registerEvents(this, this);
+        Bukkit.getPluginManager().registerEvents(this, this);
         LOGGER.info("日志测试！！！！！！！！！！！！！！！！！！");
     }
 
