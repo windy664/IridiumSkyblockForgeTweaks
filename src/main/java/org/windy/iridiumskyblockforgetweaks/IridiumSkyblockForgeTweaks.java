@@ -37,12 +37,11 @@ public class IridiumSkyblockForgeTweaks {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void useWrench(PlayerInteractEvent.RightClickBlock event) {
+        LOGGER.info("触发交互事件")
+            
         // 获取玩家和物品
         Player player = event.getEntity();
         ItemStack itemStack = event.getItemStack();
-
-        // 记录详细的日志
-        LOGGER.info("Forge wrench event detected.");
 
         // 判断事件是否已取消
         if (event.isCanceled()) {
@@ -52,20 +51,20 @@ public class IridiumSkyblockForgeTweaks {
 
         // 检查世界是否有效
         if (event.getLevel() == null) {
-            LOGGER.warn("Level is null, returning.");
+            LOGGER.warn("世界为空，不处理.");
             return;
         }
 
         // 记录物品信息，检查是否是扳手
-        LOGGER.info("Item is wrench: " + AllItems.WRENCH.isIn(itemStack));
+        LOGGER.info("手持扳手: " + AllItems.WRENCH.isIn(itemStack));
 
         // 如果是扳手，取消事件
         if (AllItems.WRENCH.isIn(itemStack)) {
-            LOGGER.info("Detected wrench interaction, canceling event.");
+            LOGGER.info("开始取消扳手事件");
             event.setCanceled(true);
-            LOGGER.info("Forge wrench event canceled.");
+            LOGGER.info("扳手事件已取消");
         } else {
-            LOGGER.info("Item is not a wrench.");
+            LOGGER.info("非扳手也");
         }
     }
 }
